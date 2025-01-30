@@ -42,6 +42,22 @@ public class Mahaveer {
                 }
                 System.out.println("----");
             }
+            else if (toEcho.startsWith("unmark ")){
+                try {
+                    int taskNumber = Integer.parseInt(toEcho.substring(7)) - 1;
+                    if(taskNumber >= 0 && taskNumber < counter){
+                        Task task = taskList[taskNumber];
+                        task.setDone(false);
+                        System.out.println("OK, I've marked this task as not done yet:");
+                        System.out.println("[" + task.getStatusIcon() + "] " + task.description);
+                    } else {
+                        System.out.println("Invalid task number.");
+                    }
+                } catch(NumberFormatException e){
+                    System.out.println("Please provide a valid task number.");
+                }
+                System.out.println("----");
+            }
             else {
                 System.out.println("Stored: " + toEcho);
                 System.out.println("----");
