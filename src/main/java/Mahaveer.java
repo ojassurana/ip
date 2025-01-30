@@ -15,6 +15,16 @@ public class Mahaveer {
             if (toEcho.equals("bye")){
                 notBye = false;
             }
+            else if (toEcho.equals("list")){
+                if (counter == 0) {
+                    System.out.println("No tasks available.");
+                } else {
+                    for (int i = 0; i < counter; i++) {
+                        System.out.println((i + 1) + ". " + taskList[i]);
+                    }
+                }
+                System.out.println("----");
+            }
             else {
                 System.out.println("Stored: " + toEcho);
                 System.out.println("----");
