@@ -1,6 +1,11 @@
 import java.util.Scanner;
 
 public class Mahaveer {
+
+    private static void printSeparator() {
+        System.out.println("----");
+    }
+
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         Task[] taskList = new Task[100];
@@ -12,7 +17,7 @@ public class Mahaveer {
 
         while (notBye) {
             toEcho = in.nextLine();
-            System.out.println("----");
+            printSeparator();
             if (toEcho.equals("bye")) {
                 notBye = false;
             } else if (toEcho.equals("list")) {
@@ -24,7 +29,7 @@ public class Mahaveer {
                         System.out.println(" " + (i + 1) + ". " + taskList[i]);
                     }
                 }
-                System.out.println("----");
+                printSeparator();
             } else if (toEcho.startsWith("mark ")) {
                 try {
                     int taskNumber = Integer.parseInt(toEcho.substring(5)) - 1;
@@ -39,7 +44,7 @@ public class Mahaveer {
                 } catch (NumberFormatException e) {
                     System.out.println("Please provide a valid task number.");
                 }
-                System.out.println("----");
+                printSeparator();
             } else if (toEcho.startsWith("unmark ")) {
                 try {
                     int taskNumber = Integer.parseInt(toEcho.substring(7)) - 1;
@@ -54,7 +59,7 @@ public class Mahaveer {
                 } catch (NumberFormatException e) {
                     System.out.println("Please provide a valid task number.");
                 }
-                System.out.println("----");
+                printSeparator();
             } else if (toEcho.startsWith("todo ")) {
                 String description = toEcho.substring(5).trim();
                 taskList[counter] = new Task(description);
@@ -88,7 +93,7 @@ public class Mahaveer {
                 }
             } else {
                 System.out.println("Stored: " + toEcho);
-                System.out.println("----");
+                printSeparator();
                 taskList[counter] = new Task(toEcho);
                 counter++;
             }
