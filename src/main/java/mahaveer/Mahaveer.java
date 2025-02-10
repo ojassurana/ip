@@ -1,3 +1,10 @@
+package mahaveer;
+
+import mahaveer.exception.MaheveerException;
+import mahaveer.task.Deadline;
+import mahaveer.task.Event;
+import mahaveer.task.Task;
+
 import java.util.Scanner;
 
 public class Mahaveer {
@@ -61,7 +68,7 @@ public class Mahaveer {
         int counter = 0;
         final String SEPARATOR_LINE = "____________________________________________________________\n";
 
-        System.out.println(SEPARATOR_LINE + " Hello! I'm Mahaveer\n What can I do for you?\n" + SEPARATOR_LINE);
+        System.out.println(SEPARATOR_LINE + " Hello! I'm mahaveer.Mahaveer\n What can I do for you?\n" + SEPARATOR_LINE);
         boolean notBye = true;
 
         while (notBye) {
@@ -93,7 +100,7 @@ public class Mahaveer {
                         } else {
                             task.setDone(true);
                             System.out.println("Nice! I've marked this task as done:");
-                            System.out.println("  [" + task.getStatusIcon() + "] " + task.description);
+                            System.out.println("  [" + task.getStatusIcon() + "] " + task.getDescription());
                         }
                     } else {
                         System.out.println("Task number does not exist.");
@@ -113,7 +120,7 @@ public class Mahaveer {
                         } else {
                             task.setDone(false);
                             System.out.println("OK, I've marked this task as not done yet:");
-                            System.out.println("  [" + task.getStatusIcon() + "] " + task.description);
+                            System.out.println("  [" + task.getStatusIcon() + "] " + task.getDescription());
                         }
                     } else {
                         System.out.println("Task number does not exist.");
@@ -176,7 +183,7 @@ public class Mahaveer {
                 try {
                     throw new MaheveerException(
                             "I'm sorry, I don't understand what you want me to do :c\n"
-                                    + "Please refer to Mahaveer Manual! (COMING SOON ON README.md)"
+                                    + "Please refer to mahaveer.Mahaveer Manual! (COMING SOON ON README.md)"
                     );
                 } catch (MaheveerException e) {
                     System.out.println(e.getMessage());
