@@ -6,9 +6,11 @@ public class Mahaveer {
         System.out.println("----");
     }
 
-    private static void exceptionManager(String userInput, String commandWord) throws MaheveerException {
+    private static void emptyDescription(String userInput, String commandWord) throws MaheveerException {
         userInput = userInput.trim();
         int minLengthRequired;
+        String expectedPrefix = commandWord + " ";
+
         String commandHint = switch (commandWord) {
             case "todo" -> {
                 minLengthRequired = 5;
@@ -42,10 +44,10 @@ public class Mahaveer {
                 yield "Please provide more details for the command '" + commandWord + "'.";
             }
         };
-        if (userInput.length() <= minLengthRequired) {
+
+        if (!userInput.startsWith(expectedPrefix) || userInput.length() <= minLengthRequired) {
             throw new MaheveerException(
-                    "The description of '" + commandWord + "' cannot be empty :c\n"
-                            + commandHint
+                    "The description of '" + commandWord + "' cannot be empty :c\n" + commandHint
             );
         }
     }
@@ -75,7 +77,7 @@ public class Mahaveer {
                     }
                 }
                 printSeparator();
-            } else if (toEcho.startsWith("mark ")) {
+            } else if (toEcho.startsWith("mark")) {
                 try {
                     int taskNumber = Integer.parseInt(toEcho.substring(5)) - 1;
                     if (taskNumber >= 0 && taskNumber < counter) {
@@ -84,13 +86,13 @@ public class Mahaveer {
                         System.out.println("Nice! I've marked this task as done:");
                         System.out.println("  [" + task.getStatusIcon() + "] " + task.description);
                     } else {
-                        System.out.println("Invalid task number.");
+                        System.out.println("Task number does not exist.");
                     }
-                } catch (NumberFormatException e) {
+                } catch (Exception e) {
                     System.out.println("Please provide a valid task number.");
                 }
                 printSeparator();
-            } else if (toEcho.startsWith("unmark ")) {
+            } else if (toEcho.startsWith("unmark")) {
                 try {
                     int taskNumber = Integer.parseInt(toEcho.substring(7)) - 1;
                     if (taskNumber >= 0 && taskNumber < counter) {
@@ -99,15 +101,15 @@ public class Mahaveer {
                         System.out.println("OK, I've marked this task as not done yet:");
                         System.out.println("  [" + task.getStatusIcon() + "] " + task.description);
                     } else {
-                        System.out.println("Invalid task number.");
+                        System.out.println("Task number does not exist.");
                     }
-                } catch (NumberFormatException e) {
+                } catch (Exception e) {
                     System.out.println("Please provide a valid task number.");
                 }
                 printSeparator();
-            } else if (toEcho.startsWith("todo ")) {
+            } else if (toEcho.startsWith("todo")) {
                 try {
-                    exceptionManager(toEcho, "todo");
+                    emptyDescription(toEcho, "todo");
                     String description = toEcho.substring(5).trim();
                     taskList[counter] = new Task(description);
                     counter++;
@@ -116,9 +118,9 @@ public class Mahaveer {
                 } catch (MaheveerException e) {
                     System.out.println(e.getMessage());
                 }
-            } else if (toEcho.startsWith("deadline ")) {
+            } else if (toEcho.startsWith("deadline")) {
                 try {
-                    exceptionManager(toEcho, "deadline");
+                    emptyDescription(toEcho, "deadline");
                     String[] parts = toEcho.substring(9).split(" /by ");
                     if (parts.length < 2) {
                         throw new MaheveerException("Invalid deadline format. Use: deadline <description> /by <time>");
@@ -133,9 +135,9 @@ public class Mahaveer {
                 } catch (MaheveerException e) {
                     System.out.println(e.getMessage());
                 }
-            } else if (toEcho.startsWith("event ")) {
+            } else if (toEcho.startsWith("event")) {
                 try {
-                    exceptionManager(toEcho, "event");
+                    emptyDescription(toEcho, "event");
                     String[] parts = toEcho.substring(6).split(" /from | /to ");
                     if (parts.length < 3) {
                         throw new MaheveerException("Invalid event format. Use: event <description> /from <start> /to <end>");
