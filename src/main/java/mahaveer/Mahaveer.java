@@ -1,3 +1,5 @@
+package mahaveer;
+
 import java.util.Scanner;
 
 public class Mahaveer {
@@ -61,7 +63,7 @@ public class Mahaveer {
         int counter = 0;
         final String SEPARATOR_LINE = "____________________________________________________________\n";
 
-        System.out.println(SEPARATOR_LINE + " Hello! I'm Mahaveer\n What can I do for you?\n" + SEPARATOR_LINE);
+        System.out.println(SEPARATOR_LINE + " Hello! I'm mahaveer.Mahaveer\n What can I do for you?\n" + SEPARATOR_LINE);
         boolean notBye = true;
 
         while (notBye) {
@@ -96,7 +98,7 @@ public class Mahaveer {
                             System.out.println("  [" + task.getStatusIcon() + "] " + task.description);
                         }
                     } else {
-                        System.out.println("Task number does not exist.");
+                        System.out.println("mahaveer.Task number does not exist.");
                     }
                 } catch (Exception e) {
                     System.out.println("Please provide a valid task number.");
@@ -116,7 +118,7 @@ public class Mahaveer {
                             System.out.println("  [" + task.getStatusIcon() + "] " + task.description);
                         }
                     } else {
-                        System.out.println("Task number does not exist.");
+                        System.out.println("mahaveer.Task number does not exist.");
                     }
                 } catch (Exception e) {
                     System.out.println("Please provide a valid task number.");
@@ -176,7 +178,7 @@ public class Mahaveer {
                 try {
                     throw new MaheveerException(
                             "I'm sorry, I don't understand what you want me to do :c\n"
-                                    + "Please refer to Mahaveer Manual! (COMING SOON ON README.md)"
+                                    + "Please refer to mahaveer.Mahaveer Manual! (COMING SOON ON README.md)"
                     );
                 } catch (MaheveerException e) {
                     System.out.println(e.getMessage());
