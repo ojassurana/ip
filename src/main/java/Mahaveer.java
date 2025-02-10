@@ -6,6 +6,15 @@ public class Mahaveer {
         System.out.println("----");
     }
 
+    private static void checkEmptyAfterCommand(String userInput, String commandWord) throws MaheveerException {
+        userInput = userInput.trim();
+        if (userInput.length() <= commandWord.length()) {
+            throw new MaheveerException(
+                    "I'm sorry by the description of " + commandWord + " cannot be empty.\nInstead, type something like: e.g. " + commandWord + " Make a bread."
+            );
+        }
+    }
+
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         Task[] taskList = new Task[100];
