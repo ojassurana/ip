@@ -56,8 +56,8 @@ public class Mahaveer {
         Task[] taskList = new Task[100];
         String toEcho;
         int counter = 0;
-        String line = "____________________________________________________________\n";
-        System.out.println(line + " Hello! I'm Mahaveer\n What can I do for you?\n" + line);
+        final String SEPARATOR_LINE = "____________________________________________________________\n";
+        System.out.println(SEPARATOR_LINE + " Hello! I'm Mahaveer\n What can I do for you?\n" + SEPARATOR_LINE);
         boolean notBye = true;
 
         while (notBye) {
@@ -159,7 +159,7 @@ public class Mahaveer {
                 }
             }
         }
-        System.out.println(line);
+        System.out.println(SEPARATOR_LINE);
         System.out.println("Jai Jinendra! Till we meet next time :)");
     }
 }
