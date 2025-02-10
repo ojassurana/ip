@@ -6,7 +6,7 @@ public class Mahaveer {
         System.out.println("----");
     }
 
-    private static void checkEmptyAfterCommand(String userInput, String commandWord) throws MaheveerException {
+    private static void exceptionManager(String userInput, String commandWord) throws MaheveerException {
         userInput = userInput.trim();
         if (userInput.length() <= commandWord.length()) {
             throw new MaheveerException(
@@ -69,36 +69,51 @@ public class Mahaveer {
                     System.out.println("Please provide a valid task number.");
                 }
                 printSeparator();
-            } else if (toEcho.startsWith("todo ")) {
-                String description = toEcho.substring(5).trim();
-                taskList[counter] = new Task(description);
-                counter++;
-                System.out.println("Got it. I've added this task:");
-                System.out.println("  [T][ ] " + description);
-            } else if (toEcho.startsWith("deadline ")) {
-                String[] parts = toEcho.substring(9).split(" /by ");
-                if (parts.length < 2) {
-                    System.out.println("Invalid deadline format. Use: deadline <description> /by <time>");
-                } else {
-                    String description = parts[0].trim();
-                    String by = parts[1].trim();
-                    taskList[counter] = new Deadline(description, by);
+            } else if (toEcho.startsWith("todo")) {
+                try {
+                    exceptionManager(toEcho, "todo");
+                    String description = toEcho.substring(5).trim();
+                    taskList[counter] = new Task(description);
                     counter++;
                     System.out.println("Got it. I've added this task:");
-                    System.out.println("  " + taskList[counter - 1].toString());
+                    System.out.println("  [T][ ] " + description);
+                } catch (MaheveerException e) {
+                    System.out.println(e.getMessage());
                 }
-            } else if (toEcho.startsWith("event ")) {
-                String[] parts = toEcho.substring(6).split(" /from | /to ");
-                if (parts.length < 3) {
-                    System.out.println("Invalid event format. Use: event <description> /from <start> /to <end>");
-                } else {
-                    String description = parts[0].trim();
-                    String start = parts[1].trim();
-                    String end = parts[2].trim();
-                    taskList[counter] = new Event(description, start, end);
-                    counter++;
-                    System.out.println("Got it. I've added this task:");
-                    System.out.println("  " + taskList[counter - 1].toString());
+            } else if (toEcho.startsWith("deadline")) {
+                try {
+                    exceptionManager(toEcho, "deadline");
+                    String[] parts = toEcho.substring(9).split(" /by ");
+                    if (parts.length < 2) {
+                        System.out.println("Invalid deadline format. Use: deadline <description> /by <time>");
+                    } else {
+                        String description = parts[0].trim();
+                        String by = parts[1].trim();
+                        taskList[counter] = new Deadline(description, by);
+                        counter++;
+                        System.out.println("Got it. I've added this task:");
+                        System.out.println("  " + taskList[counter - 1].toString());
+                    }
+                } catch (MaheveerException e) {
+                    System.out.println(e.getMessage());
+                }
+            } else if (toEcho.startsWith("event")) {
+                try {
+                    exceptionManager(toEcho, "event");
+                    String[] parts = toEcho.substring(6).split(" /from | /to ");
+                    if (parts.length < 3) {
+                        System.out.println("Invalid event format. Use: event <description> /from <start> /to <end>");
+                    } else {
+                        String description = parts[0].trim();
+                        String start = parts[1].trim();
+                        String end = parts[2].trim();
+                        taskList[counter] = new Event(description, start, end);
+                        counter++;
+                        System.out.println("Got it. I've added this task:");
+                        System.out.println("  " + taskList[counter - 1].toString());
+                    }
+                } catch (MaheveerException e) {
+                    System.out.println(e.getMessage());
                 }
             } else {
                 System.out.println("Stored: " + toEcho);
