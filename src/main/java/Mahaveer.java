@@ -11,6 +11,7 @@ public class Mahaveer {
         int minLengthRequired;
         String expectedPrefix = commandWord + " ";
 
+        // Determine the minimum length to allow for actual description text
         String commandHint = switch (commandWord) {
             case "todo" -> {
                 minLengthRequired = 5;
@@ -22,7 +23,7 @@ public class Mahaveer {
                         """;
             }
             case "deadline" -> {
-                minLengthRequired = 9;
+                minLengthRequired = 9; // "deadline " -> 9 chars
                 yield """
                         A 'deadline' requires a description and '/by' time.
                         For example:
@@ -31,7 +32,7 @@ public class Mahaveer {
                         """;
             }
             case "event" -> {
-                minLengthRequired = 6;
+                minLengthRequired = 6; // "event " -> 6 chars
                 yield """
                         An 'event' requires a description plus '/from' and '/to'.
                         For example:
@@ -45,6 +46,8 @@ public class Mahaveer {
             }
         };
 
+        // If the input doesn't start with <command> + space
+        // OR the user typed no additional characters, throw exception
         if (!userInput.startsWith(expectedPrefix) || userInput.length() <= minLengthRequired) {
             throw new MaheveerException(
                     "The description of '" + commandWord + "' cannot be empty :c\n" + commandHint
@@ -52,21 +55,22 @@ public class Mahaveer {
         }
     }
 
-
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         Task[] taskList = new Task[100];
-        String toEcho;
         int counter = 0;
         final String SEPARATOR_LINE = "____________________________________________________________\n";
+
         System.out.println(SEPARATOR_LINE + " Hello! I'm Mahaveer\n What can I do for you?\n" + SEPARATOR_LINE);
         boolean notBye = true;
 
         while (notBye) {
-            toEcho = in.nextLine();
+            String toEcho = in.nextLine();
             printSeparator();
+
             if (toEcho.equals("bye")) {
                 notBye = false;
+
             } else if (toEcho.equals("list")) {
                 if (counter == 0) {
                     System.out.println("No tasks available.");
@@ -77,14 +81,20 @@ public class Mahaveer {
                     }
                 }
                 printSeparator();
+
             } else if (toEcho.startsWith("mark")) {
                 try {
-                    int taskNumber = Integer.parseInt(toEcho.substring(5)) - 1;
+                    int taskNumber = Integer.parseInt(toEcho.substring(5).trim()) - 1;
                     if (taskNumber >= 0 && taskNumber < counter) {
                         Task task = taskList[taskNumber];
-                        task.setDone(true);
-                        System.out.println("Nice! I've marked this task as done:");
-                        System.out.println("  [" + task.getStatusIcon() + "] " + task.description);
+                        if (task.isDone()) {
+                            // Already marked
+                            System.out.println("This task is already marked as done!");
+                        } else {
+                            task.setDone(true);
+                            System.out.println("Nice! I've marked this task as done:");
+                            System.out.println("  [" + task.getStatusIcon() + "] " + task.description);
+                        }
                     } else {
                         System.out.println("Task number does not exist.");
                     }
@@ -92,14 +102,19 @@ public class Mahaveer {
                     System.out.println("Please provide a valid task number.");
                 }
                 printSeparator();
+
             } else if (toEcho.startsWith("unmark")) {
                 try {
-                    int taskNumber = Integer.parseInt(toEcho.substring(7)) - 1;
+                    int taskNumber = Integer.parseInt(toEcho.substring(7).trim()) - 1;
                     if (taskNumber >= 0 && taskNumber < counter) {
                         Task task = taskList[taskNumber];
-                        task.setDone(false);
-                        System.out.println("OK, I've marked this task as not done yet:");
-                        System.out.println("  [" + task.getStatusIcon() + "] " + task.description);
+                        if (!task.isDone()) {
+                            System.out.println("This task is already marked as not done!");
+                        } else {
+                            task.setDone(false);
+                            System.out.println("OK, I've marked this task as not done yet:");
+                            System.out.println("  [" + task.getStatusIcon() + "] " + task.description);
+                        }
                     } else {
                         System.out.println("Task number does not exist.");
                     }
@@ -107,6 +122,7 @@ public class Mahaveer {
                     System.out.println("Please provide a valid task number.");
                 }
                 printSeparator();
+
             } else if (toEcho.startsWith("todo")) {
                 try {
                     emptyDescription(toEcho, "todo");
@@ -118,6 +134,7 @@ public class Mahaveer {
                 } catch (MaheveerException e) {
                     System.out.println(e.getMessage());
                 }
+
             } else if (toEcho.startsWith("deadline")) {
                 try {
                     emptyDescription(toEcho, "deadline");
@@ -135,6 +152,7 @@ public class Mahaveer {
                 } catch (MaheveerException e) {
                     System.out.println(e.getMessage());
                 }
+
             } else if (toEcho.startsWith("event")) {
                 try {
                     emptyDescription(toEcho, "event");
@@ -153,14 +171,19 @@ public class Mahaveer {
                 } catch (MaheveerException e) {
                     System.out.println(e.getMessage());
                 }
+
             } else {
                 try {
-                    throw new MaheveerException("I'm sorry, I don't understand what you want me to do :c\nPlease refer to Mahaveer Manual! (COMING SOON ON README.md)");
+                    throw new MaheveerException(
+                            "I'm sorry, I don't understand what you want me to do :c\n"
+                                    + "Please refer to Mahaveer Manual! (COMING SOON ON README.md)"
+                    );
                 } catch (MaheveerException e) {
                     System.out.println(e.getMessage());
                 }
             }
         }
+
         System.out.println(SEPARATOR_LINE);
         System.out.println("Jai Jinendra! Till we meet next time :)");
     }
