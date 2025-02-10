@@ -1,5 +1,10 @@
 package mahaveer;
 
+import mahaveer.exception.MaheveerException;
+import mahaveer.task.Deadline;
+import mahaveer.task.Event;
+import mahaveer.task.Task;
+
 import java.util.Scanner;
 
 public class Mahaveer {
@@ -95,10 +100,10 @@ public class Mahaveer {
                         } else {
                             task.setDone(true);
                             System.out.println("Nice! I've marked this task as done:");
-                            System.out.println("  [" + task.getStatusIcon() + "] " + task.description);
+                            System.out.println("  [" + task.getStatusIcon() + "] " + task.getDescription());
                         }
                     } else {
-                        System.out.println("mahaveer.Task number does not exist.");
+                        System.out.println("Task number does not exist.");
                     }
                 } catch (Exception e) {
                     System.out.println("Please provide a valid task number.");
@@ -115,10 +120,10 @@ public class Mahaveer {
                         } else {
                             task.setDone(false);
                             System.out.println("OK, I've marked this task as not done yet:");
-                            System.out.println("  [" + task.getStatusIcon() + "] " + task.description);
+                            System.out.println("  [" + task.getStatusIcon() + "] " + task.getDescription());
                         }
                     } else {
-                        System.out.println("mahaveer.Task number does not exist.");
+                        System.out.println("Task number does not exist.");
                     }
                 } catch (Exception e) {
                     System.out.println("Please provide a valid task number.");

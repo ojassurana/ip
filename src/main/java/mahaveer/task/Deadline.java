@@ -1,4 +1,4 @@
-package mahaveer;
+package mahaveer.task;
 
 public class Deadline extends Task {
     protected String by;

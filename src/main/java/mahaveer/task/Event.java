@@ -1,4 +1,4 @@
-package mahaveer;
+package mahaveer.task;
 
 public class Event extends Task {
     protected String start;

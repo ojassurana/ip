@@ -1,6 +1,6 @@
-package mahaveer;
+package mahaveer.exception;
 
-class MaheveerException extends Exception {
+public class MaheveerException extends Exception {
     public MaheveerException(String message) {
         super(message);
     }
