@@ -8,12 +8,48 @@ public class Mahaveer {
 
     private static void exceptionManager(String userInput, String commandWord) throws MaheveerException {
         userInput = userInput.trim();
-        if (userInput.length() <= commandWord.length()) {
+        int minLengthRequired;
+        String commandHint = switch (commandWord) {
+            case "todo" -> {
+                minLengthRequired = 5;
+                yield """
+                        A 'todo' requires a short description.
+                        For example:
+                          todo Bake a cake
+                          todo Walk the dog
+                        """;
+            }
+            case "deadline" -> {
+                minLengthRequired = 9;
+                yield """
+                        A 'deadline' requires a description and '/by' time.
+                        For example:
+                          deadline Submit assignment /by tonight
+                          deadline Finish reading /by next Monday
+                        """;
+            }
+            case "event" -> {
+                minLengthRequired = 6;
+                yield """
+                        An 'event' requires a description plus '/from' and '/to'.
+                        For example:
+                          event Conference /from Monday /to Wednesday
+                          event Birthday party /from 2pm /to 6pm
+                        """;
+            }
+            default -> {
+                minLengthRequired = commandWord.length() + 1;
+                yield "Please provide more details for the command '" + commandWord + "'.";
+            }
+        };
+        if (userInput.length() <= minLengthRequired) {
             throw new MaheveerException(
-                    "I'm sorry by the description of " + commandWord + " cannot be empty.\nInstead, type something like: e.g. " + commandWord + " Make a bread."
+                    "The description of '" + commandWord + "' cannot be empty :c\n"
+                            + commandHint
             );
         }
     }
+
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
@@ -69,7 +105,7 @@ public class Mahaveer {
                     System.out.println("Please provide a valid task number.");
                 }
                 printSeparator();
-            } else if (toEcho.startsWith("todo")) {
+            } else if (toEcho.startsWith("todo ")) {
                 try {
                     exceptionManager(toEcho, "todo");
                     String description = toEcho.substring(5).trim();
@@ -80,12 +116,12 @@ public class Mahaveer {
                 } catch (MaheveerException e) {
                     System.out.println(e.getMessage());
                 }
-            } else if (toEcho.startsWith("deadline")) {
+            } else if (toEcho.startsWith("deadline ")) {
                 try {
                     exceptionManager(toEcho, "deadline");
                     String[] parts = toEcho.substring(9).split(" /by ");
                     if (parts.length < 2) {
-                        System.out.println("Invalid deadline format. Use: deadline <description> /by <time>");
+                        throw new MaheveerException("Invalid deadline format. Use: deadline <description> /by <time>");
                     } else {
                         String description = parts[0].trim();
                         String by = parts[1].trim();
@@ -97,12 +133,12 @@ public class Mahaveer {
                 } catch (MaheveerException e) {
                     System.out.println(e.getMessage());
                 }
-            } else if (toEcho.startsWith("event")) {
+            } else if (toEcho.startsWith("event ")) {
                 try {
                     exceptionManager(toEcho, "event");
                     String[] parts = toEcho.substring(6).split(" /from | /to ");
                     if (parts.length < 3) {
-                        System.out.println("Invalid event format. Use: event <description> /from <start> /to <end>");
+                        throw new MaheveerException("Invalid event format. Use: event <description> /from <start> /to <end>");
                     } else {
                         String description = parts[0].trim();
                         String start = parts[1].trim();
@@ -116,10 +152,11 @@ public class Mahaveer {
                     System.out.println(e.getMessage());
                 }
             } else {
-                System.out.println("Stored: " + toEcho);
-                printSeparator();
-                taskList[counter] = new Task(toEcho);
-                counter++;
+                try {
+                    throw new MaheveerException("I'm sorry, I don't understand what you want me to do :c\nPlease refer to Mahaveer Manual! (COMING SOON ON README.md)");
+                } catch (MaheveerException e) {
+                    System.out.println(e.getMessage());
+                }
             }
         }
         System.out.println(line);
