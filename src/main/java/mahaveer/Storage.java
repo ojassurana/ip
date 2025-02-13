@@ -27,7 +27,7 @@ public class Storage {
         List<Task> taskList = new ArrayList<>();
         File file = new File(FILE_PATH);
         if (!file.exists()) {
-            return taskList; // Return empty list if file doesn't exist
+            return taskList;
         }
 
         try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
@@ -47,23 +47,27 @@ public class Storage {
     private Task parseTask(String line) {
         String[] parts = line.split(", ");
         if (parts.length < 3) return null;
-
         String type = parts[0];
         boolean isDone = parts[1].equals("1");
         String description = parts[2];
-
-        return switch (type) {
-            case "todo" -> new Task(description);
-            case "deadline" -> {
-                if (parts.length < 4) yield null;
-                yield new Deadline(description, parts[3]);
-            }
-            case "event" -> {
-                if (parts.length < 5) yield null;
-                yield new Event(description, parts[3], parts[4]);
-            }
-            default -> null;
-        };
+        Task task;
+        switch (type) {
+        case "todo":
+            task = new Task(description);
+            break;
+        case "deadline":
+            if (parts.length < 4) return null;
+            task = new Deadline(description, parts[3]);
+            break;
+        case "event":
+            if (parts.length < 5) return null;
+            task = new Event(description, parts[3], parts[4]);
+            break;
+        default:
+            return null;
+        }
+        task.setDone(isDone);
+        return task;
     }
 
     private void saveTasks(List<Task> taskList) {
