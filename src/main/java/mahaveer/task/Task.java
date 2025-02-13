@@ -29,4 +29,8 @@ public class Task {
     public String getDescription() {
         return description;
     }
+
+    public String toFileFormat() {
+        return "todo, " + (isDone ? "1" : "0") + ", " + description;
+    }
 }
