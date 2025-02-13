@@ -5,6 +5,7 @@ import mahaveer.task.Deadline;
 import mahaveer.task.Event;
 import mahaveer.task.Task;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class Mahaveer {
@@ -64,8 +65,13 @@ public class Mahaveer {
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
+        Storage storage = new Storage();
         Task[] taskList = new Task[100];
-        int counter = 0;
+        List<Task> loadedTasks = storage.loadTasks();
+        for (int i = 0; i < loadedTasks.size() && i < 100; i++) {
+            taskList[i] = loadedTasks.get(i);
+        }
+        int counter = loadedTasks.size() < 100 ? loadedTasks.size() : 100;
         final String SEPARATOR_LINE = "____________________________________________________________\n";
 
         System.out.println(SEPARATOR_LINE + " Hello! I'm mahaveer.Mahaveer\n What can I do for you?\n" + SEPARATOR_LINE);
@@ -95,9 +101,9 @@ public class Mahaveer {
                     if (taskNumber >= 0 && taskNumber < counter) {
                         Task task = taskList[taskNumber];
                         if (task.isDone()) {
-                            // Already marked
                             System.out.println("This task is already marked as done!");
                         } else {
+                            storage.markTask(taskNumber);
                             task.setDone(true);
                             System.out.println("Nice! I've marked this task as done:");
                             System.out.println("  [" + task.getStatusIcon() + "] " + task.getDescription());
@@ -121,6 +127,7 @@ public class Mahaveer {
                             task.setDone(false);
                             System.out.println("OK, I've marked this task as not done yet:");
                             System.out.println("  [" + task.getStatusIcon() + "] " + task.getDescription());
+                            storage.unmarkTask(taskNumber);
                         }
                     } else {
                         System.out.println("Task number does not exist.");
@@ -138,6 +145,7 @@ public class Mahaveer {
                     counter++;
                     System.out.println("Got it. I've added this task:");
                     System.out.println("  [T][ ] " + description);
+                    storage.addTodo(description);
                 } catch (MaheveerException e) {
                     System.out.println(e.getMessage());
                 }
@@ -155,6 +163,7 @@ public class Mahaveer {
                         counter++;
                         System.out.println("Got it. I've added this task:");
                         System.out.println("  " + taskList[counter - 1].toString());
+                        storage.addDeadline(description, by);
                     }
                 } catch (MaheveerException e) {
                     System.out.println(e.getMessage());
@@ -174,6 +183,7 @@ public class Mahaveer {
                         counter++;
                         System.out.println("Got it. I've added this task:");
                         System.out.println("  " + taskList[counter - 1].toString());
+                        storage.addEvent(description, start, end);
                     }
                 } catch (MaheveerException e) {
                     System.out.println(e.getMessage());
