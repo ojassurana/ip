@@ -106,29 +106,57 @@ public class Storage {
     }
 
     public void markTask(int index) {
-        List<Task> taskList = loadTasks();
-        if (index >= 0 && index < taskList.size()) {
-            taskList.get(index).setDone(true);
-            try (RandomAccessFile raf = new RandomAccessFile(FILE_PATH, "rw")) {
-                for (Task task : taskList) {
-                    raf.writeBytes(task.toFileFormat() + "\n");
+        try {
+            List<String> lines = new ArrayList<>();
+            int currentIndex = 0;
+            try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split(", ");
+                    if (currentIndex == index && parts.length >= 2) {
+                        parts[1] = "1"; // Update second column to "1"
+                        line = String.join(", ", parts);
+                    }
+                    lines.add(line);
+                    currentIndex++;
                 }
-            } catch (IOException e) {
-                System.out.println("Error updating task file: " + e.getMessage());
             }
-        } else {
-            System.out.println("Task index out of bounds.");
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
+                for (String updatedLine : lines) {
+                    writer.write(updatedLine);
+                    writer.newLine();
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error updating task file: " + e.getMessage());
         }
     }
 
     public void unmarkTask(int index) {
-        List<Task> taskList = loadTasks();
-        if (index >= 0 && index < taskList.size()) {
-            taskList.get(index).setDone(false);
-            saveTasks(taskList);
-        } else {
-            System.out.println("Task index out of bounds.");
+        try {
+            List<String> lines = new ArrayList<>();
+            int currentIndex = 0;
+            try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split(", ");
+                    if (currentIndex == index && parts.length >= 2) {
+                        parts[1] = "0"; // Update second column to "0"
+                        line = String.join(", ", parts);
+                    }
+                    lines.add(line);
+                    currentIndex++;
+                }
+            }
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
+                for (String updatedLine : lines) {
+                    writer.write(updatedLine);
+                    writer.newLine();
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error updating task file: " + e.getMessage());
         }
     }
 }
-
