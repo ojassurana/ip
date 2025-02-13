@@ -26,7 +26,6 @@ public class Storage {
     public List<Task> loadTasks() {
         List<Task> taskList = new ArrayList<>();
         File file = new File(FILE_PATH);
-
         if (!file.exists()) {
             return taskList; // Return empty list if file doesn't exist
         }
@@ -53,18 +52,18 @@ public class Storage {
         boolean isDone = parts[1].equals("1");
         String description = parts[2];
 
-        switch (type) {
-        case "todo":
-            return new Task(description);
-        case "deadline":
-            if (parts.length < 4) return null;
-            return new Deadline(description, parts[3]);
-        case "event":
-            if (parts.length < 5) return null;
-            return new Event(description, parts[3], parts[4]);
-        default:
-            return null;
-        }
+        return switch (type) {
+            case "todo" -> new Task(description);
+            case "deadline" -> {
+                if (parts.length < 4) yield null;
+                yield new Deadline(description, parts[3]);
+            }
+            case "event" -> {
+                if (parts.length < 5) yield null;
+                yield new Event(description, parts[3], parts[4]);
+            }
+            default -> null;
+        };
     }
 
     private void saveTasks(List<Task> taskList) {
