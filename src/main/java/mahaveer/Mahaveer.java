@@ -6,6 +6,8 @@ import mahaveer.task.Event;
 import mahaveer.task.Task;
 
 import java.util.Scanner;
+import java.util.ArrayList;
+
 
 public class Mahaveer {
 
@@ -64,10 +66,8 @@ public class Mahaveer {
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        Task[] taskList = new Task[100];
-        int counter = 0;
+        ArrayList<Task> taskList = new ArrayList<>();
         final String SEPARATOR_LINE = "____________________________________________________________\n";
-
         System.out.println(SEPARATOR_LINE + " Hello! I'm mahaveer.Mahaveer\n What can I do for you?\n" + SEPARATOR_LINE);
         boolean notBye = true;
 
@@ -79,12 +79,12 @@ public class Mahaveer {
                 notBye = false;
 
             } else if (toEcho.equals("list")) {
-                if (counter == 0) {
+                if (taskList.isEmpty()) {
                     System.out.println("No tasks available.");
                 } else {
                     System.out.println("Here are the tasks in your list:");
-                    for (int i = 0; i < counter; i++) {
-                        System.out.println(" " + (i + 1) + ". " + taskList[i]);
+                    for (int i = 0; i < taskList.size(); i++) {
+                        System.out.println(" " + (i + 1) + ". " + taskList.get(i));
                     }
                 }
                 printSeparator();
@@ -92,8 +92,8 @@ public class Mahaveer {
             } else if (toEcho.startsWith("mark")) {
                 try {
                     int taskNumber = Integer.parseInt(toEcho.substring(5).trim()) - 1;
-                    if (taskNumber >= 0 && taskNumber < counter) {
-                        Task task = taskList[taskNumber];
+                    if (taskNumber >= 0 && taskNumber < taskList.size()) {
+                        Task task = taskList.get(taskNumber);
                         if (task.isDone()) {
                             // Already marked
                             System.out.println("This task is already marked as done!");
@@ -113,8 +113,8 @@ public class Mahaveer {
             } else if (toEcho.startsWith("unmark")) {
                 try {
                     int taskNumber = Integer.parseInt(toEcho.substring(7).trim()) - 1;
-                    if (taskNumber >= 0 && taskNumber < counter) {
-                        Task task = taskList[taskNumber];
+                    if (taskNumber >= 0 && taskNumber < taskList.size()) {
+                        Task task = taskList.get(taskNumber);
                         if (!task.isDone()) {
                             System.out.println("This task is already marked as not done!");
                         } else {
@@ -134,8 +134,7 @@ public class Mahaveer {
                 try {
                     emptyDescription(toEcho, "todo");
                     String description = toEcho.substring(5).trim();
-                    taskList[counter] = new Task(description);
-                    counter++;
+                    taskList.add(new Task(description));
                     System.out.println("Got it. I've added this task:");
                     System.out.println("  [T][ ] " + description);
                 } catch (MaheveerException e) {
@@ -151,10 +150,9 @@ public class Mahaveer {
                     } else {
                         String description = parts[0].trim();
                         String by = parts[1].trim();
-                        taskList[counter] = new Deadline(description, by);
-                        counter++;
+                        taskList.add(new Deadline(description, by));
                         System.out.println("Got it. I've added this task:");
-                        System.out.println("  " + taskList[counter - 1].toString());
+                        System.out.println("  " + taskList.get(taskList.size() - 1).toString());
                     }
                 } catch (MaheveerException e) {
                     System.out.println(e.getMessage());
@@ -170,15 +168,28 @@ public class Mahaveer {
                         String description = parts[0].trim();
                         String start = parts[1].trim();
                         String end = parts[2].trim();
-                        taskList[counter] = new Event(description, start, end);
-                        counter++;
+                        taskList.add(new Event(description, start, end));
                         System.out.println("Got it. I've added this task:");
-                        System.out.println("  " + taskList[counter - 1].toString());
+                        System.out.println("  " + taskList.get(taskList.size() - 1).toString());
                     }
                 } catch (MaheveerException e) {
                     System.out.println(e.getMessage());
                 }
-
+            } else if (toEcho.startsWith("delete")) {
+                try {
+                    int taskNumber = Integer.parseInt(toEcho.substring(7).trim()) - 1;
+                    if (taskNumber >= 0 && taskNumber < taskList.size()) {
+                        // Get the task before removing, so we can show it to the user
+                        Task removedTask = taskList.remove(taskNumber);
+                        System.out.println("Noted. I've removed this task:");
+                        System.out.println("  " + removedTask);
+                        System.out.println("Now you have " + taskList.size() + " tasks in the list.");
+                    } else {
+                        System.out.println("Task number does not exist.");
+                    }
+                } catch (Exception e) {
+                    System.out.println("Please provide a valid task number.");
+                }
             } else {
                 try {
                     throw new MaheveerException(
