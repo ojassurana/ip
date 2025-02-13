@@ -109,7 +109,13 @@ public class Storage {
         List<Task> taskList = loadTasks();
         if (index >= 0 && index < taskList.size()) {
             taskList.get(index).setDone(true);
-            saveTasks(taskList);
+            try (RandomAccessFile raf = new RandomAccessFile(FILE_PATH, "rw")) {
+                for (Task task : taskList) {
+                    raf.writeBytes(task.toFileFormat() + "\n");
+                }
+            } catch (IOException e) {
+                System.out.println("Error updating task file: " + e.getMessage());
+            }
         } else {
             System.out.println("Task index out of bounds.");
         }
