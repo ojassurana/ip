@@ -14,4 +14,9 @@ public class Event extends Task {
     public String toString() {
         return "[E][" + getStatusIcon() + "] " + description + " (from: " + start + " to: " + end + ")";
     }
+
+    @Override
+    public String toFileFormat() {
+        return "event, " + (isDone ? "1" : "0") + ", " + description + ", " + start + ", " + end;
+    }
 }
