@@ -180,6 +180,7 @@ public class Mahaveer {
                         taskList.add(new Event(description, start, end));
                         System.out.println("Got it. I've added this task:");
                         System.out.println("  " + taskList.get(taskList.size() - 1).toString());
+                        storage.addEvent(description, start, end);
                     }
                 } catch (MaheveerException e) {
                     System.out.println(e.getMessage());
@@ -193,6 +194,7 @@ public class Mahaveer {
                         System.out.println("Noted. I've removed this task:");
                         System.out.println("  " + removedTask);
                         System.out.println("Now you have " + taskList.size() + " tasks in the list.");
+                        storage.deleteTask(taskNumber);
                     } else {
                         System.out.println("Task number does not exist.");
                     }
