@@ -71,7 +71,7 @@ public class Mahaveer {
         Storage storage = new Storage();
         List<Task> loadedTasks = storage.loadTasks();
         for (int i = 0; i < loadedTasks.size() && i < 100; i++) {
-            taskList.set(i, loadedTasks.get(i));
+            taskList.add(i, loadedTasks.get(i));
         }
         final String SEPARATOR_LINE = "____________________________________________________________\n";
         System.out.println(SEPARATOR_LINE + " Hello! I'm mahaveer.Mahaveer\n What can I do for you?\n" + SEPARATOR_LINE);
