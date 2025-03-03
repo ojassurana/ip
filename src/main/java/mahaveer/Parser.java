@@ -2,7 +2,6 @@ package mahaveer;
 
 import mahaveer.exception.MaheveerException;
 
-
 public class Parser {
     private static final Ui ui = new Ui();
 
@@ -16,6 +15,8 @@ public class Parser {
         String rest = tokens.length > 1 ? tokens[1].trim() : "";
 
         switch (command) {
+        case "bye":
+            return new ParsedCommand("bye", null, "", null, null);
         case "list":
             return new ParsedCommand("list", null, "", null, null);
         case "mark":
