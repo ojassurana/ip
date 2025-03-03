@@ -1,41 +1,37 @@
 package mahaveer;
-import mahaveer.exception.MaheveerException;
 
+import mahaveer.exception.MaheveerException;
 import mahaveer.task.Deadline;
 import mahaveer.task.Event;
 import mahaveer.task.Task;
-
 import java.util.List;
-import java.util.ArrayList;
 
 public class Mahaveer {
 
     public static void main(String[] args) {
         Ui ui = new Ui();
-        ArrayList<Task> taskList = new ArrayList<>();
         Storage storage = new Storage();
+        // Load tasks from storage and wrap them in a TaskList
         List<Task> loadedTasks = storage.loadTasks();
-        for (int i = 0; i < loadedTasks.size() && i < 100; i++) {
-            taskList.add(i, loadedTasks.get(i));
-        }
+        TaskList taskList = new TaskList(loadedTasks);
+
         ui.showWelcome();
         boolean notBye = true;
         while (notBye) {
             try {
                 Parser.ParsedCommand commandDetails = Parser.getCommandDetails();
                 ui.showLine();
-
                 if (commandDetails.command().equals("bye")) {
                     notBye = false;
                 } else {
                     switch (commandDetails.command()) {
                     case "list":
-                        if (taskList.isEmpty()) {
+                        if (taskList.size() == 0) {
                             ui.showToUser("No tasks available.");
                         } else {
                             ui.showToUser("Here are the tasks in your list:");
                             for (int i = 0; i < taskList.size(); i++) {
-                                ui.showToUser(" " + (i + 1) + ". " + taskList.get(i));
+                                ui.showToUser(" " + (i + 1) + ". " + taskList.getAllTasks().get(i));
                             }
                         }
                         break;
@@ -46,7 +42,7 @@ public class Mahaveer {
                         } else {
                             int taskIndex = markNumber - 1;
                             if (taskIndex >= 0 && taskIndex < taskList.size()) {
-                                Task task = taskList.get(taskIndex);
+                                Task task = taskList.getTask(taskIndex);
                                 if (task.isDone()) {
                                     ui.showToUser("This task is already marked as done!");
                                 } else {
@@ -67,7 +63,7 @@ public class Mahaveer {
                         } else {
                             int taskIndex = unmarkNumber - 1;
                             if (taskIndex >= 0 && taskIndex < taskList.size()) {
-                                Task task = taskList.get(taskIndex);
+                                Task task = taskList.getTask(taskIndex);
                                 if (!task.isDone()) {
                                     ui.showToUser("This task is already marked as not done!");
                                 } else {
@@ -84,10 +80,10 @@ public class Mahaveer {
                     case "todo":
                         String todoDesc = commandDetails.task();
                         if (todoDesc.isEmpty()) {
-                            ui.showToUser(
-                                    "A 'todo' requires a short description.\nFor example:\n  todo Bake a cake\n  todo Walk the dog");
+                            ui.showToUser("A 'todo' requires a short description.\nFor example:\n  todo Bake a cake\n  todo Walk the dog");
                         } else {
-                            taskList.add(new Task(todoDesc));
+                            Task newTask = new Task(todoDesc);
+                            taskList.addTask(newTask);
                             ui.showToUser("Got it. I've added this task:");
                             ui.showToUser("  [T][ ] " + todoDesc);
                             storage.addTodo(todoDesc);
@@ -97,12 +93,12 @@ public class Mahaveer {
                         String deadlineTask = commandDetails.task();
                         String by = commandDetails.extra();
                         if (deadlineTask.isEmpty() || by == null || by.isEmpty()) {
-                            ui.showToUser(
-                                    "A 'deadline' requires a description and '/by' time.\nFor example:\n  deadline Submit assignment /by tonight\n  deadline Finish reading /by next Monday");
+                            ui.showToUser("A 'deadline' requires a description and '/by' time.\nFor example:\n  deadline Submit assignment /by tonight\n  deadline Finish reading /by next Monday");
                         } else {
-                            taskList.add(new Deadline(deadlineTask, by));
+                            Task newTask = new Deadline(deadlineTask, by);
+                            taskList.addTask(newTask);
                             ui.showToUser("Got it. I've added this task:");
-                            ui.showToUser("  " + taskList.get(taskList.size() - 1).toString());
+                            ui.showToUser("  " + newTask);
                             storage.addDeadline(deadlineTask, by);
                         }
                         break;
@@ -111,12 +107,12 @@ public class Mahaveer {
                         String from = commandDetails.extra();
                         String to = commandDetails.extra2();
                         if (eventTask.isEmpty() || from == null || from.isEmpty() || to == null || to.isEmpty()) {
-                            ui.showToUser(
-                                    "An 'event' requires a description plus '/from' and '/to'.\nFor example:\n  event Conference /from Monday /to Wednesday\n  event Birthday party /from 2pm /to 6pm");
+                            ui.showToUser("An 'event' requires a description plus '/from' and '/to'.\nFor example:\n  event Conference /from Monday /to Wednesday\n  event Birthday party /from 2pm /to 6pm");
                         } else {
-                            taskList.add(new Event(eventTask, from, to));
+                            Task newTask = new Event(eventTask, from, to);
+                            taskList.addTask(newTask);
                             ui.showToUser("Got it. I've added this task:");
-                            ui.showToUser("  " + taskList.get(taskList.size() - 1).toString());
+                            ui.showToUser("  " + newTask);
                             storage.addEvent(eventTask, from, to);
                         }
                         break;
@@ -127,7 +123,7 @@ public class Mahaveer {
                         } else {
                             int taskIndex = deleteNumber - 1;
                             if (taskIndex >= 0 && taskIndex < taskList.size()) {
-                                Task removedTask = taskList.remove(taskIndex);
+                                Task removedTask = taskList.deleteTask(taskIndex);
                                 ui.showToUser("Noted. I've removed this task:");
                                 ui.showToUser("  " + removedTask);
                                 ui.showToUser("Now you have " + taskList.size() + " tasks in the list.");
@@ -138,8 +134,7 @@ public class Mahaveer {
                         }
                         break;
                     default:
-                        ui.showToUser(
-                                "I'm sorry, I don't understand what you want me to do :c\nPlease refer to mahaveer.Mahaveer Manual! (COMING SOON ON README.md)");
+                        ui.showToUser("I'm sorry, I don't understand what you want me to do :c\nPlease refer to mahaveer.Mahaveer Manual! (COMING SOON ON README.md)");
                         break;
                     }
                 }
