@@ -6,15 +6,10 @@ import mahaveer.task.Event;
 import mahaveer.task.Task;
 
 import java.util.List;
-import java.util.Scanner;
 import java.util.ArrayList;
 
 
 public class Mahaveer {
-
-    private static void printSeparator() {
-        System.out.println("----");
-    }
 
     private static void emptyDescription(String userInput, String commandWord) throws MaheveerException {
         userInput = userInput.trim();
@@ -66,34 +61,31 @@ public class Mahaveer {
     }
 
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
+        Ui ui = new Ui();
         ArrayList<Task> taskList = new ArrayList<>();
         Storage storage = new Storage();
         List<Task> loadedTasks = storage.loadTasks();
         for (int i = 0; i < loadedTasks.size() && i < 100; i++) {
             taskList.add(i, loadedTasks.get(i));
         }
-        final String SEPARATOR_LINE = "____________________________________________________________\n";
-        System.out.println(SEPARATOR_LINE + " Hello! I'm mahaveer.Mahaveer\n What can I do for you?\n" + SEPARATOR_LINE);
+        ui.showWelcome();
         boolean notBye = true;
-
         while (notBye) {
-            String toEcho = in.nextLine();
-            printSeparator();
-
+            String toEcho = ui.readCommand();
+            ui.showLine();
             if (toEcho.equals("bye")) {
                 notBye = false;
 
             } else if (toEcho.equals("list")) {
                 if (taskList.isEmpty()) {
-                    System.out.println("No tasks available.");
+                    ui.showToUser("No tasks available.");
                 } else {
-                    System.out.println("Here are the tasks in your list:");
+                    ui.showToUser("Here are the tasks in your list:");
                     for (int i = 0; i < taskList.size(); i++) {
-                        System.out.println(" " + (i + 1) + ". " + taskList.get(i));
+                        ui.showToUser(" " + (i + 1) + ". " + taskList.get(i));
                     }
                 }
-                printSeparator();
+                ui.showLine();
 
             } else if (toEcho.startsWith("mark")) {
                 try {
@@ -101,20 +93,20 @@ public class Mahaveer {
                     if (taskNumber >= 0 && taskNumber < taskList.size()) {
                         Task task = taskList.get(taskNumber);
                         if (task.isDone()) {
-                            System.out.println("This task is already marked as done!");
+                            ui.showToUser("This task is already marked as done!");
                         } else {
                             storage.markTask(taskNumber);
                             task.setDone(true);
-                            System.out.println("Nice! I've marked this task as done:");
-                            System.out.println("  [" + task.getStatusIcon() + "] " + task.getDescription());
+                            ui.showToUser("Nice! I've marked this task as done:");
+                            ui.showToUser("  [" + task.getStatusIcon() + "] " + task.getDescription());
                         }
                     } else {
-                        System.out.println("Task number does not exist.");
+                        ui.showToUser("Task number does not exist.");
                     }
                 } catch (Exception e) {
-                    System.out.println("Please provide a valid task number.");
+                    ui.showToUser("Please provide a valid task number.");
                 }
-                printSeparator();
+                ui.showLine();
 
             } else if (toEcho.startsWith("unmark")) {
                 try {
@@ -122,31 +114,31 @@ public class Mahaveer {
                     if (taskNumber >= 0 && taskNumber < taskList.size()) {
                         Task task = taskList.get(taskNumber);
                         if (!task.isDone()) {
-                            System.out.println("This task is already marked as not done!");
+                            ui.showToUser("This task is already marked as not done!");
                         } else {
                             task.setDone(false);
-                            System.out.println("OK, I've marked this task as not done yet:");
-                            System.out.println("  [" + task.getStatusIcon() + "] " + task.getDescription());
+                            ui.showToUser("OK, I've marked this task as not done yet:");
+                            ui.showToUser("  [" + task.getStatusIcon() + "] " + task.getDescription());
                             storage.unmarkTask(taskNumber);
                         }
                     } else {
-                        System.out.println("Task number does not exist.");
+                        ui.showToUser("Task number does not exist.");
                     }
                 } catch (Exception e) {
-                    System.out.println("Please provide a valid task number.");
+                    ui.showToUser("Please provide a valid task number.");
                 }
-                printSeparator();
+                ui.showLine();
 
             } else if (toEcho.startsWith("todo")) {
                 try {
                     emptyDescription(toEcho, "todo");
                     String description = toEcho.substring(5).trim();
                     taskList.add(new Task(description));
-                    System.out.println("Got it. I've added this task:");
-                    System.out.println("  [T][ ] " + description);
+                    ui.showToUser("Got it. I've added this task:");
+                    ui.showToUser("  [T][ ] " + description);
                     storage.addTodo(description);
                 } catch (MaheveerException e) {
-                    System.out.println(e.getMessage());
+                    ui.showToUser(e.getMessage());
                 }
 
             } else if (toEcho.startsWith("deadline")) {
@@ -159,12 +151,12 @@ public class Mahaveer {
                         String description = parts[0].trim();
                         String by = parts[1].trim();
                         taskList.add(new Deadline(description, by));
-                        System.out.println("Got it. I've added this task:");
-                        System.out.println("  " + taskList.get(taskList.size() - 1).toString());
+                        ui.showToUser("Got it. I've added this task:");
+                        ui.showToUser("  " + taskList.get(taskList.size() - 1).toString());
                         storage.addDeadline(description, by);
                     }
                 } catch (MaheveerException e) {
-                    System.out.println(e.getMessage());
+                    ui.showToUser(e.getMessage());
                 }
 
             } else if (toEcho.startsWith("event")) {
@@ -178,12 +170,12 @@ public class Mahaveer {
                         String start = parts[1].trim();
                         String end = parts[2].trim();
                         taskList.add(new Event(description, start, end));
-                        System.out.println("Got it. I've added this task:");
-                        System.out.println("  " + taskList.get(taskList.size() - 1).toString());
+                        ui.showToUser("Got it. I've added this task:");
+                        ui.showToUser("  " + taskList.get(taskList.size() - 1).toString());
                         storage.addEvent(description, start, end);
                     }
                 } catch (MaheveerException e) {
-                    System.out.println(e.getMessage());
+                    ui.showToUser(e.getMessage());
                 }
             } else if (toEcho.startsWith("delete")) {
                 try {
@@ -191,15 +183,15 @@ public class Mahaveer {
                     if (taskNumber >= 0 && taskNumber < taskList.size()) {
                         // Get the task before removing, so we can show it to the user
                         Task removedTask = taskList.remove(taskNumber);
-                        System.out.println("Noted. I've removed this task:");
-                        System.out.println("  " + removedTask);
-                        System.out.println("Now you have " + taskList.size() + " tasks in the list.");
+                        ui.showToUser("Noted. I've removed this task:");
+                        ui.showToUser("  " + removedTask);
+                        ui.showToUser("Now you have " + taskList.size() + " tasks in the list.");
                         storage.deleteTask(taskNumber);
                     } else {
-                        System.out.println("Task number does not exist.");
+                        ui.showToUser("Task number does not exist.");
                     }
                 } catch (Exception e) {
-                    System.out.println("Please provide a valid task number.");
+                    ui.showToUser("Please provide a valid task number.");
                 }
             } else {
                 try {
@@ -208,12 +200,12 @@ public class Mahaveer {
                                     + "Please refer to mahaveer.Mahaveer Manual! (COMING SOON ON README.md)"
                     );
                 } catch (MaheveerException e) {
-                    System.out.println(e.getMessage());
+                    ui.showToUser(e.getMessage());
                 }
             }
         }
 
-        System.out.println(SEPARATOR_LINE);
-        System.out.println("Jai Jinendra! Till we meet next time :)");
+        ui.showLine();
+        ui.showToUser("Jai Jinendra! Till we meet next time :)");
     }
 }
