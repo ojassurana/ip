@@ -2,9 +2,28 @@ package mahaveer;
 
 import mahaveer.exception.MaheveerException;
 
+/**
+ * The Parser class is responsible for reading user input from the UI,
+ * parsing the input into a command and its arguments, and returning a
+ * ParsedCommand record containing the details.
+ */
 public class Parser {
     private static final Ui ui = new Ui();
 
+    /**
+     * Reads and parses the user command from the UI.
+     * <p>
+     * This method trims the input, splits it into a command keyword and its
+     * arguments, and returns a ParsedCommand record with the command details.
+     * Depending on the command, it may throw a MaheveerException if the input
+     * is empty or does not match the expected format.
+     * </p>
+     *
+     * @return a ParsedCommand record containing the parsed command, number (if applicable),
+     *         task description, extra detail (e.g., deadline time or event start), and
+     *         additional detail (e.g., event end)
+     * @throws MaheveerException if the input is invalid or does not meet the command format
+     */
     public static ParsedCommand getCommandDetails() throws MaheveerException {
         String input = ui.readCommand().trim();
         if (input.isEmpty())
@@ -72,6 +91,18 @@ public class Parser {
         }
     }
 
-    public record ParsedCommand(String command, Integer number, String task, String extra, String extra2) {
-    }
+    /**
+     * Immutable record representing the parsed command details.
+     * <p>
+     * It contains:
+     * <ul>
+     *   <li>command - the command keyword</li>
+     *   <li>number - a numeric argument (if applicable)</li>
+     *   <li>task - the task description</li>
+     *   <li>extra - additional detail such as deadline time or event start</li>
+     *   <li>extra2 - additional detail such as event end</li>
+     * </ul>
+     * </p>
+     */
+    public record ParsedCommand(String command, Integer number, String task, String extra, String extra2) { }
 }
