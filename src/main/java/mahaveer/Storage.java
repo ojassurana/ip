@@ -8,9 +8,20 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Storage class is responsible for loading and saving tasks to a file.
+ * It provides methods to add, delete, mark, and unmark tasks.
+ */
 public class Storage {
     private static final String FILE_PATH = "./data/tasks.txt";
 
+    /**
+     * Constructs a new Storage instance.
+     * <p>
+     * This constructor ensures the storage file and its directory exist.
+     * If the file is created for the first time, it prints a confirmation message.
+     * </p>
+     */
     public Storage() {
         File file = new File(FILE_PATH);
         try {
@@ -23,6 +34,11 @@ public class Storage {
         }
     }
 
+    /**
+     * Loads tasks from the storage file.
+     *
+     * @return a list of tasks loaded from the file; returns an empty list if the file does not exist or an error occurs.
+     */
     public List<Task> loadTasks() {
         List<Task> taskList = new ArrayList<>();
         File file = new File(FILE_PATH);
@@ -44,6 +60,12 @@ public class Storage {
         return taskList;
     }
 
+    /**
+     * Parses a line from the storage file into a Task object.
+     *
+     * @param line a line from the file representing a task in a specific format.
+     * @return a Task object if parsing is successful; otherwise, returns null.
+     */
     private Task parseTask(String line) {
         String[] parts = line.split(", ");
         if (parts.length < 3) return null;
@@ -70,6 +92,11 @@ public class Storage {
         return task;
     }
 
+    /**
+     * Saves the provided list of tasks to the storage file.
+     *
+     * @param taskList the list of tasks to be saved.
+     */
     private void saveTasks(List<Task> taskList) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
             for (Task task : taskList) {
@@ -81,24 +108,47 @@ public class Storage {
         }
     }
 
+    /**
+     * Adds a new todo task to the storage.
+     *
+     * @param description the description of the todo task.
+     */
     public void addTodo(String description) {
         List<Task> taskList = loadTasks();
         taskList.add(new Task(description));
         saveTasks(taskList);
     }
 
+    /**
+     * Adds a new deadline task to the storage.
+     *
+     * @param description the task description.
+     * @param by          the deadline time.
+     */
     public void addDeadline(String description, String by) {
         List<Task> taskList = loadTasks();
         taskList.add(new Deadline(description, by));
         saveTasks(taskList);
     }
 
+    /**
+     * Adds a new event task to the storage.
+     *
+     * @param description the task description.
+     * @param from        the event start time.
+     * @param to          the event end time.
+     */
     public void addEvent(String description, String from, String to) {
         List<Task> taskList = loadTasks();
         taskList.add(new Event(description, from, to));
         saveTasks(taskList);
     }
 
+    /**
+     * Deletes a task at the specified index from the storage.
+     *
+     * @param index the index of the task to be deleted.
+     */
     public void deleteTask(int index) {
         List<Task> taskList = loadTasks();
         if (index >= 0 && index < taskList.size()) {
@@ -109,6 +159,11 @@ public class Storage {
         }
     }
 
+    /**
+     * Marks the task at the specified index as done in the storage.
+     *
+     * @param index the index of the task to mark as done.
+     */
     public void markTask(int index) {
         try {
             List<String> lines = new ArrayList<>();
@@ -137,6 +192,11 @@ public class Storage {
         }
     }
 
+    /**
+     * Unmarks the task at the specified index in the storage.
+     *
+     * @param index the index of the task to unmark.
+     */
     public void unmarkTask(int index) {
         try {
             List<String> lines = new ArrayList<>();
