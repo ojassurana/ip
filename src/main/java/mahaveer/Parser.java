@@ -67,6 +67,11 @@ public class Parser {
                     fromToParts[1].trim().isEmpty())
                 throw new MaheveerException("Invalid event format. Use: event <description> /from <start> /to <end>");
             return new ParsedCommand("event", null, description, fromToParts[0].trim(), fromToParts[1].trim());
+        case "find":
+            if (rest.isEmpty()) {
+                throw new MaheveerException("A 'find' requires a description.\nFor example:\n  find read book");
+            }
+            return new ParsedCommand("find", null, rest, null, null);
         default:
             throw new MaheveerException("I'm sorry, I don't understand what you want me to do :c\nPlease refer to Mahaveer Manual! (COMING SOON ON README.md)");
         }
