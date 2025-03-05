@@ -20,7 +20,7 @@ public class Parser {
      * </p>
      *
      * @return a ParsedCommand record containing the parsed command, number (if applicable),
-     * task description, extra detail (e.g., deadline time or event start), and
+     * task description, extra detail (e.g., deadline time or event start), and›
      * additional detail (e.g., event end)
      * @throws MaheveerException if the input is invalid or does not meet the command format
      */
@@ -92,7 +92,7 @@ public class Parser {
             }
             return new ParsedCommand("find", null, rest, null, null);
         default:
-            throw new MaheveerException("I'm sorry, I don't understand what you want me to do :c\nPlease refer to Mahaveer Manual! (COMING SOON ON README.md)");
+            throw new MaheveerException("I'm sorry, I don't understand what you want me to do :c\nPlease refer to: ojassurana.github.io/ip for manual!");
         }
     }
 
