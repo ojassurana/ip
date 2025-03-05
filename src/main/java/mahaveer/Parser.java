@@ -20,8 +20,8 @@ public class Parser {
      * </p>
      *
      * @return a ParsedCommand record containing the parsed command, number (if applicable),
-     *         task description, extra detail (e.g., deadline time or event start), and
-     *         additional detail (e.g., event end)
+     * task description, extra detail (e.g., deadline time or event start), and
+     * additional detail (e.g., event end)
      * @throws MaheveerException if the input is invalid or does not meet the command format
      */
     public static ParsedCommand getCommandDetails() throws MaheveerException {
@@ -109,5 +109,6 @@ public class Parser {
      * </ul>
      * </p>
      */
-    public record ParsedCommand(String command, Integer number, String task, String extra, String extra2) { }
+    public record ParsedCommand(String command, Integer number, String task, String extra, String extra2) {
+    }
 }
