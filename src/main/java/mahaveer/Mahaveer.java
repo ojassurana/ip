@@ -17,10 +17,16 @@ import java.util.List;
 public class Mahaveer {
 
     /**
-     * The main entry point of the application.
+     * Main entry point of the application.
      *
-     * @param args command-line arguments (not used)
+     * <p>
+     * Initializes the user interface, loads stored tasks, and starts the command processing loop.
+     * This loop continues until an exit command is received.
+     * </p>
+     *
+     * @param args Command-line arguments (not used)
      */
+
     public static void main(String[] args) {
         Ui ui = new Ui();
         Storage storage = new Storage();
