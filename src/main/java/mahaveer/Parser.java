@@ -26,8 +26,9 @@ public class Parser {
      */
     public static ParsedCommand getCommandDetails() throws MaheveerException {
         String input = ui.readCommand().trim();
-        if (input.isEmpty())
+        if (input.isEmpty()) {
             throw new MaheveerException("No command provided. Please enter a command.");
+        }
 
         String[] tokens = splitCommandAndArguments(input);
         String command = tokens[0];
@@ -60,38 +61,46 @@ public class Parser {
                 throw new MaheveerException("Please provide a valid task number.");
             }
         case "todo":
-            if (rest.isEmpty())
+            if (rest.isEmpty()) {
                 throw new MaheveerException("A 'todo' requires a short description.\nFor example:\n"
-                        + "  todo Bake a cake\n  todo Walk the dog");
+                        + "  todo Bake a cake\n"
+                        + "  todo Walk the dog");
+            }
             return new ParsedCommand("todo", null, rest, null, null);
         case "deadline":
-            if (rest.isEmpty())
+            if (rest.isEmpty()) {
                 throw new MaheveerException("A 'deadline' requires a description and '/by' time.\nFor example:\n"
                         + "  deadline Submit assignment /by tonight\n"
                         + "  deadline Finish reading /by next Monday");
+            }
             String[] deadlineParts = rest.split(" /by ", 2);
-            if (deadlineParts.length < 2 || deadlineParts[0].trim().isEmpty() || deadlineParts[1].trim().isEmpty())
+            if (deadlineParts.length < 2 || deadlineParts[0].trim().isEmpty() || deadlineParts[1].trim().isEmpty()) {
                 throw new MaheveerException("Invalid deadline format. Use: deadline <description> /by <time>");
+            }
             return new ParsedCommand("deadline", null, deadlineParts[0].trim(),
                     deadlineParts[1].trim(), null);
         case "event":
-            if (rest.isEmpty())
+            if (rest.isEmpty()) {
                 throw new MaheveerException("An 'event' requires a description plus '/from' and '/to'.\nFor example:\n"
                         + "  event Conference /from Monday /to Wednesday\n"
                         + "  event Birthday party /from 2pm /to 6pm");
+            }
             String[] eventParts = rest.split(" /from ", 2);
-            if (eventParts.length < 2 || eventParts[0].trim().isEmpty())
+            if (eventParts.length < 2 || eventParts[0].trim().isEmpty()) {
                 throw new MaheveerException("Invalid event format. Use: event <description> /from <start> /to <end>");
+            }
             String description = eventParts[0].trim();
             String remainder = eventParts[1];
             String[] fromToParts = remainder.split(" /to ", 2);
-            if (fromToParts.length < 2 || fromToParts[0].trim().isEmpty() || fromToParts[1].trim().isEmpty())
+            if (fromToParts.length < 2 || fromToParts[0].trim().isEmpty() || fromToParts[1].trim().isEmpty()) {
                 throw new MaheveerException("Invalid event format. Use: event <description> /from <start> /to <end>");
+            }
             return new ParsedCommand("event", null, description, fromToParts[0].trim(),
                     fromToParts[1].trim());
         case "find":
             if (rest.isEmpty()) {
-                throw new MaheveerException("A 'find' requires a description.\nFor example:\n  find read book");
+                throw new MaheveerException("A 'find' requires a description.\nFor example:\n"
+                        + "  find read book");
             }
             return new ParsedCommand("find", null, rest, null, null);
         default:
