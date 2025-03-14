@@ -20,7 +20,7 @@ public class Parser {
      * </p>
      *
      * @return a ParsedCommand record containing the parsed command, number (if applicable),
-     * task description, extra detail (e.g., deadline time or event start), and›
+     * task description, extra detail (e.g., deadline time or event start), and
      * additional detail (e.g., event end)
      * @throws MaheveerException if the input is invalid or does not meet the command format
      */
@@ -29,9 +29,9 @@ public class Parser {
         if (input.isEmpty())
             throw new MaheveerException("No command provided. Please enter a command.");
 
-        String[] tokens = input.split("\\s+", 2);
-        String command = tokens[0].toLowerCase();
-        String rest = tokens.length > 1 ? tokens[1].trim() : "";
+        String[] tokens = splitCommandAndArguments(input);
+        String command = tokens[0];
+        String rest = tokens[1];
 
         switch (command) {
         case "bye":
@@ -67,9 +67,7 @@ public class Parser {
             if (rest.isEmpty())
                 throw new MaheveerException("A 'deadline' requires a description and '/by' time.\nFor example:\n  deadline Submit assignment /by tonight\n  deadline Finish reading /by next Monday");
             String[] deadlineParts = rest.split(" /by ", 2);
-            if (deadlineParts.length < 2 ||
-                    deadlineParts[0].trim().isEmpty() ||
-                    deadlineParts[1].trim().isEmpty())
+            if (deadlineParts.length < 2 || deadlineParts[0].trim().isEmpty() || deadlineParts[1].trim().isEmpty())
                 throw new MaheveerException("Invalid deadline format. Use: deadline <description> /by <time>");
             return new ParsedCommand("deadline", null, deadlineParts[0].trim(), deadlineParts[1].trim(), null);
         case "event":
@@ -81,9 +79,7 @@ public class Parser {
             String description = eventParts[0].trim();
             String remainder = eventParts[1];
             String[] fromToParts = remainder.split(" /to ", 2);
-            if (fromToParts.length < 2 ||
-                    fromToParts[0].trim().isEmpty() ||
-                    fromToParts[1].trim().isEmpty())
+            if (fromToParts.length < 2 || fromToParts[0].trim().isEmpty() || fromToParts[1].trim().isEmpty())
                 throw new MaheveerException("Invalid event format. Use: event <description> /from <start> /to <end>");
             return new ParsedCommand("event", null, description, fromToParts[0].trim(), fromToParts[1].trim());
         case "find":
@@ -94,6 +90,13 @@ public class Parser {
         default:
             throw new MaheveerException("I'm sorry, I don't understand what you want me to do :c\nPlease refer to: ojassurana.github.io/ip for manual!");
         }
+    }
+
+    private static String[] splitCommandAndArguments(String input) {
+        String[] tokens = input.split("\\s+", 2);
+        String command = tokens[0].toLowerCase();
+        String rest = tokens.length > 1 ? tokens[1].trim() : "";
+        return new String[]{command, rest};
     }
 
     /**
