@@ -1,9 +1,5 @@
 package mahaveer;
 
-import mahaveer.task.Task;
-import mahaveer.task.Deadline;
-import mahaveer.task.Event;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
