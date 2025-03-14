@@ -44,7 +44,8 @@ public class CommandFactory {
         case "find":
             return new FindCommand(parsedCommand.task());
         default:
-            throw new MaheveerException("I'm sorry, I don't understand what you want me to do :c\nPlease refer to Mahaveer Manual! (COMING SOON ON README.md)");
+            throw new MaheveerException("I'm sorry, I don't understand what you want me to do :c\n"
+                    + "Please refer to Mahaveer Manual! (COMING SOON ON README.md)");
         }
     }
 }

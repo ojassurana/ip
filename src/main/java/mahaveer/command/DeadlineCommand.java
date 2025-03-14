@@ -45,7 +45,9 @@ public class DeadlineCommand extends Command {
     public void execute(TaskList tasks, Ui ui, Storage storage) throws MaheveerException {
         if (description.isEmpty() || by == null || by.isEmpty()) {
             throw new MaheveerException("A 'deadline' requires a description and '/by' time.\n"
-                    + "For example:\n  deadline Submit assignment /by tonight\n  deadline Finish reading /by next Monday");
+                    + "For example:\n"
+                    + "  deadline Submit assignment /by tonight\n"
+                    + "  deadline Finish reading /by next Monday");
         }
         Task task = new Deadline(description, by);
         tasks.addTask(task);

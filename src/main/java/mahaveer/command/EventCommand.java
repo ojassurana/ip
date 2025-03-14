@@ -48,7 +48,9 @@ public class EventCommand extends Command {
     public void execute(TaskList tasks, Ui ui, Storage storage) throws MaheveerException {
         if (description.isEmpty() || from == null || from.isEmpty() || to == null || to.isEmpty()) {
             throw new MaheveerException("An 'event' requires a description plus '/from' and '/to'.\n" +
-                    "For example:\n  event Conference /from Monday /to Wednesday\n  event Birthday party /from 2pm /to 6pm");
+                    "For example:\n"
+                    + "  event Conference /from Monday /to Wednesday\n"
+                    + "  event Birthday party /from 2pm /to 6pm");
         }
         Task task = new Event(description, from, to);
         tasks.addTask(task);
