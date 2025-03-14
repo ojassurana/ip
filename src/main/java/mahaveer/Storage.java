@@ -25,7 +25,15 @@ public class Storage {
     public Storage() {
         File file = new File(FILE_PATH);
         try {
-            file.getParentFile().mkdirs(); // Ensure the directory exists
+            File parentDir = file.getParentFile();
+            if (parentDir != null && !parentDir.exists()) {
+                if (parentDir.mkdirs()) {
+                    System.out.println("Storage directory created: " + parentDir.getAbsolutePath());
+                } else {
+                    System.out.println("Failed to create storage directory: " + parentDir.getAbsolutePath());
+                }
+            }
+
             if (file.createNewFile()) {
                 System.out.println("Storage file created: " + FILE_PATH);
             }
@@ -34,134 +42,38 @@ public class Storage {
         }
     }
 
-    /**
-     * Loads tasks from the storage file.
-     *
-     * @return a list of tasks loaded from the file; returns an empty list if the file does not exist or an error occurs.
-     */
-    public List<Task> loadTasks() {
-        List<Task> taskList = new ArrayList<>();
-        File file = new File(FILE_PATH);
-        if (!file.exists()) {
-            return taskList;
-        }
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                Task task = parseTask(line);
-                if (task != null) {
-                    taskList.add(task);
+    /**
+     * Updates the task completion status in the file.
+     *
+     * @param index   the index of the task to update
+     * @param status  the new status ("1" for marked, "0" for unmarked)
+     */
+    private void updateTaskStatus(int index, String status) {
+        try {
+            List<String> lines = new ArrayList<>();
+            int currentIndex = 0;
+            try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split(", ");
+                    if (currentIndex == index && parts.length >= 2) {
+                        parts[1] = status; // Update second column to new status
+                        line = String.join(", ", parts);
+                    }
+                    lines.add(line);
+                    currentIndex++;
+                }
+            }
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
+                for (String updatedLine : lines) {
+                    writer.write(updatedLine);
+                    writer.newLine();
                 }
             }
         } catch (IOException e) {
-            System.out.println("Error loading tasks: " + e.getMessage());
-        }
-        return taskList;
-    }
-
-    /**
-     * Parses a line from the storage file into a Task object.
-     *
-     * @param line a line from the file representing a task in a specific format.
-     * @return a Task object if parsing is successful; otherwise, returns null.
-     */
-    private Task parseTask(String line) {
-        String[] parts = line.split(", ");
-        if (parts.length < 3) {
-            return null;
-        }
-        String type = parts[0];
-        boolean isDone = parts[1].equals("1");
-        String description = parts[2];
-        Task task;
-        switch (type) {
-        case "todo":
-            task = new Task(description);
-            break;
-        case "deadline":
-            if (parts.length < 4) {
-                return null;
-            }
-            task = new Deadline(description, parts[3]);
-            break;
-        case "event":
-            if (parts.length < 5) {
-                return null;
-            }
-            task = new Event(description, parts[3], parts[4]);
-            break;
-        default:
-            return null;
-        }
-        task.setDone(isDone);
-        return task;
-    }
-
-    /**
-     * Saves the provided list of tasks to the storage file.
-     *
-     * @param taskList the list of tasks to be saved.
-     */
-    private void saveTasks(List<Task> taskList) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
-            for (Task task : taskList) {
-                writer.write(task.toFileFormat());
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            System.out.println("Error saving tasks: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Adds a new todo task to the storage.
-     *
-     * @param description the description of the todo task.
-     */
-    public void addTodo(String description) {
-        List<Task> taskList = loadTasks();
-        taskList.add(new Task(description));
-        saveTasks(taskList);
-    }
-
-    /**
-     * Adds a new deadline task to the storage.
-     *
-     * @param description the task description.
-     * @param by          the deadline time.
-     */
-    public void addDeadline(String description, String by) {
-        List<Task> taskList = loadTasks();
-        taskList.add(new Deadline(description, by));
-        saveTasks(taskList);
-    }
-
-    /**
-     * Adds a new event task to the storage.
-     *
-     * @param description the task description.
-     * @param from        the event start time.
-     * @param to          the event end time.
-     */
-    public void addEvent(String description, String from, String to) {
-        List<Task> taskList = loadTasks();
-        taskList.add(new Event(description, from, to));
-        saveTasks(taskList);
-    }
-
-    /**
-     * Deletes a task at the specified index from the storage.
-     *
-     * @param index the index of the task to be deleted.
-     */
-    public void deleteTask(int index) {
-        List<Task> taskList = loadTasks();
-        if (index >= 0 && index < taskList.size()) {
-            taskList.remove(index);
-            saveTasks(taskList);
-        } else {
-            System.out.println("Task index out of bounds.");
+            System.out.println("Error updating task file: " + e.getMessage());
         }
     }
 
@@ -171,31 +83,7 @@ public class Storage {
      * @param index the index of the task to mark as done.
      */
     public void markTask(int index) {
-        try {
-            List<String> lines = new ArrayList<>();
-            int currentIndex = 0;
-            try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    String[] parts = line.split(", ");
-                    if (currentIndex == index && parts.length >= 2) {
-                        parts[1] = "1"; // Update second column to "1"
-                        line = String.join(", ", parts);
-                    }
-                    lines.add(line);
-                    currentIndex++;
-                }
-            }
-
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
-                for (String updatedLine : lines) {
-                    writer.write(updatedLine);
-                    writer.newLine();
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Error updating task file: " + e.getMessage());
-        }
+        updateTaskStatus(index, "1");
     }
 
     /**
@@ -204,29 +92,6 @@ public class Storage {
      * @param index the index of the task to unmark.
      */
     public void unmarkTask(int index) {
-        try {
-            List<String> lines = new ArrayList<>();
-            int currentIndex = 0;
-            try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    String[] parts = line.split(", ");
-                    if (currentIndex == index && parts.length >= 2) {
-                        parts[1] = "0"; // Update second column to "0"
-                        line = String.join(", ", parts);
-                    }
-                    lines.add(line);
-                    currentIndex++;
-                }
-            }
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
-                for (String updatedLine : lines) {
-                    writer.write(updatedLine);
-                    writer.newLine();
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Error updating task file: " + e.getMessage());
-        }
+        updateTaskStatus(index, "0");
     }
 }
