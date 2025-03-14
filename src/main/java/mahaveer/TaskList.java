@@ -39,8 +39,9 @@ public class TaskList {
      * @throws MaheveerException if the index is out of bounds
      */
     public Task deleteTask(int index) throws MaheveerException {
-        if (index < 0 || index >= tasks.size())
+        if (index < 0 || index >= tasks.size()) {
             throw new MaheveerException("Task number does not exist.");
+        }
         return tasks.remove(index);
     }
 
@@ -52,8 +53,9 @@ public class TaskList {
      * @throws MaheveerException if the index is out of bounds
      */
     public Task getTask(int index) throws MaheveerException {
-        if (index < 0 || index >= tasks.size())
+        if (index < 0 || index >= tasks.size()) {
             throw new MaheveerException("Task number does not exist.");
+        }
         return tasks.get(index);
     }
 

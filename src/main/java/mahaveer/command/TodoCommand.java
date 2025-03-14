@@ -39,10 +39,11 @@ public class TodoCommand extends Command {
      */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws MaheveerException {
-        if (description.isEmpty())
+        if (description.isEmpty()) {
             throw new MaheveerException("A 'todo' requires a short description.\nFor example:\n"
                     + "  todo Bake a cake\n"
                     + "  todo Walk the dog");
+        }
         Task task = new Task(description);
         tasks.addTask(task);
         ui.showToUser("Got it. I've added this task:");

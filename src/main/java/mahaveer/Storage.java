@@ -68,7 +68,9 @@ public class Storage {
      */
     private Task parseTask(String line) {
         String[] parts = line.split(", ");
-        if (parts.length < 3) return null;
+        if (parts.length < 3) {
+            return null;
+        }
         String type = parts[0];
         boolean isDone = parts[1].equals("1");
         String description = parts[2];
@@ -78,11 +80,15 @@ public class Storage {
             task = new Task(description);
             break;
         case "deadline":
-            if (parts.length < 4) return null;
+            if (parts.length < 4) {
+                return null;
+            }
             task = new Deadline(description, parts[3]);
             break;
         case "event":
-            if (parts.length < 5) return null;
+            if (parts.length < 5) {
+                return null;
+            }
             task = new Event(description, parts[3], parts[4]);
             break;
         default:
